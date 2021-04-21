@@ -14,8 +14,13 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import AuthContext from "../Components/context";
 
 function DrawerContent1(props) {
+
+    const { signOut } = React.useContext(AuthContext);
+
+
 
 
     const paperTheme = useTheme();
@@ -98,6 +103,10 @@ function DrawerContent1(props) {
                     //   )}
                     label="Sign Out"
                     color="white"
+
+                    onPress={() => {
+                        signOut();
+                    }}
 
                 />
             </Drawer.Section>

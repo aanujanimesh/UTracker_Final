@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -8,11 +8,9 @@ import SignInScreen from "../screens/signin/SigninScreen"
 import MainTabScreen from "./MainTabScreen";
 import AboutScreen from "../screens/drawer/about/aboutScreen";
 import ContactScreen from "../screens/drawer/contact/contactScreen";
-import PreviousLocationScreen from "../screens/bottomTab/loacation/previousLocation/previousLocationScreen";
-import PreviousPathScreen from "../screens/bottomTab/loacation/previousPath/previousPathScreen";
-import DailyRunningReportScreen from "../screens/bottomTab/reports/dailyRunningReport/dailyRunningReportScreen";
-import MonthlyRunningReportScreen from "../screens/bottomTab/reports/monthlyRunningReport/monthlyRunningReportScreen";
-import WeeklyRunningReportScreen from "../screens/bottomTab/reports/weeklyRunningReport/weeklyRunningReportScreen";
+import CompanyDetailsScreen from "../screens/bottomTab/company/companyDetails/CompanyDetailsScreen";
+import VehicleDetailsScreen from "../screens/bottomTab/vehicle/vehicleDetails/VehicleDetailsScreen";
+
 import ProfileScreen from "../screens/drawer/profile/profileScreen";
 import AuthContext from '../Components/context'
 
@@ -125,13 +123,13 @@ const PreviousPathStackScreen = ({navigation}) =>(
             fontWeight:'bold'
         }
     }}>
-        <PreviousPathStack.Screen name="Previous-path" component={PreviousPathScreen} options={{
-            title:'Previous-path',
+        <PreviousPathStack.Screen name="Previous-path" component={CompanyDetailsScreen} options={{
+            title:'Company Details',
             headerLeft:()=>(
                 <Icon.Button  name="arrow-back"
                               size={25}
                               backgroundColor ="#009387"
-                              onPress={()=>navigation.navigate('Location')}>
+                              onPress={()=>navigation.navigate('Company')}>
                 </Icon.Button>
             )
         }}/>
@@ -149,13 +147,13 @@ const DailyRunningReportStackScreen = ({navigation}) =>(
             fontWeight:'bold'
         }
     }}>
-        <DailyRunningReportStack.Screen name="Daily-running-report" component={DailyRunningReportScreen} options={{
-            title:'Daily-running-report',
+        <DailyRunningReportStack.Screen name="Daily-running-report" component={VehicleDetailsScreen} options={{
+            title:'Vehicle Details',
             headerLeft:()=>(
                 <Icon.Button  name="arrow-back"
                               size={25}
                               backgroundColor ="#009387"
-                              onPress={()=>navigation.navigate('Report')}>
+                              onPress={()=>navigation.navigate('Vehicle')}>
                 </Icon.Button>
             )
         }}/>
@@ -212,28 +210,36 @@ const MonthlyRunningReportStackScreen = ({navigation}) =>(
 );
 /////////////////////////////////////////////////////////////////////////
 
-const ProfileStackScreen = ({navigation}) =>(
-    <ProfileStack.Navigator screenOptions={{
-        headerStyle:{
-            backgroundColor:'#009387',
-        },
-        headerTintColor:'#fff',
-        headerTitleStyle:{
-            fontWeight:'bold'
-        }
-    }}>
-        <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{
-            title:'Profile',
-            headerLeft:()=>(
-                <Icon.Button  name="arrow-back"
-                              size={25}
-                              backgroundColor ="#009387"
-                              onPress={()=>navigation.navigate('Home')}>
-                </Icon.Button>
-            )
-        }}/>
-    </ProfileStack.Navigator>
-);
+const ProfileStackScreen = ({navigation,route}) => {
+
+    let userId=route.params.name;
+
+    return(
+
+        <ProfileStack.Navigator screenOptions={{
+            headerStyle: {
+                backgroundColor: '#009387',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold'
+            }
+        }}>
+            <ProfileStack.Screen name="Profile" initialParams={{name:userId}} component={ProfileScreen} options={{
+                title: 'Profile',
+                headerLeft: () => (
+                    <Icon.Button name="arrow-back"
+                                 size={25}
+                                 backgroundColor="#009387"
+                                 onPress={() => navigation.navigate('Home')}>
+                    </Icon.Button>
+                )
+            }}/>
+        </ProfileStack.Navigator>
+    )
+
+
+};
 ////////////////////////////////////////////////////////////////////////////////////////////
 const ViewDeviceStackScreen = ({navigation}) =>(
     <ViewDeviceStack.Navigator screenOptions={{
@@ -291,20 +297,20 @@ const AddDeviceStackScreen = ({navigation}) =>(
 
 
 const AppNavigation = () =>{
-
+const [userId, setUserId]= useState('');
     const initialLoginState={
         isLoading:true,
         userName:null,
         userToken:null,
-       
-     
+
+
       };
-    
+
       const [tokenState,setTokenState] =React.useState(null)
-      
+
       console.log('appjs token',tokenState)
      const loginReducer=(prevState,action)=>{
-      
+
        switch(action.type){
          case 'RETRIVE_TOKEN':
            return{
@@ -332,28 +338,29 @@ const AppNavigation = () =>{
              userName:action.id,
              userToken:action.token,
              isLoading:false
-    
+
            };
        }
-    
+
      };
      const[loginState,dispatch]=React.useReducer(loginReducer,initialLoginState)
-     
-      const authContext=React.useMemo(()=>( 
-        
+
+      const authContext=React.useMemo(()=>(
+
         {
-        
+
         signIn:async(condition,token)=>{
-          
+          console.log("res+>", token)
+            setUserId(token)
           // setUserToken('false');
           // setIsLoading(false);
           setTokenState(token)
-          
+
           let userToken;
           userToken=null;
         //  for(i;i<10;i++){
         //    if(userName===data1[i].id){
-             
+
         //      break;
         //    }
         //    else continue;
@@ -361,11 +368,11 @@ const AppNavigation = () =>{
           //  console.log('user name',data1[0].id)
           //  console.log('pass',data1[0].releaseYear)
           if(condition==true){
-            
+
             try {
               userToken='fksjf';
               await AsyncStorage.setItem('userToken', userToken);
-             
+
             } catch (e) {
               console.log(e);
             }
@@ -374,7 +381,7 @@ const AppNavigation = () =>{
           dispatch({type:'LOGIN', token: userToken});
         },
         signOut:async()=>{
-          
+
           // setUserToken(null);
           // setIsLoading(false);
           try {
@@ -402,12 +409,12 @@ const AppNavigation = () =>{
           console.log('user token',userToken);
           dispatch({type:'REGISTER', token:userToken});
         },1000);
-        
+
       }, [])
 
       if (loginState.isLoading){
         return(
-          
+
           <View style={{flex: 1,justifyContent: 'center',alignItems:'center'}}>
             <ActivityIndicator size="large"/>
           </View>
@@ -418,10 +425,10 @@ const AppNavigation = () =>{
         <AuthContext.Provider value={authContext}>
         <NavigationContainer>
         {loginState.userToken !== null ?(
-           
+
                 <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
                 <Drawer.Screen name="Home" component={MainTabScreen} />
-                <Drawer.Screen name="Profile" component={ProfileStackScreen} />
+                <Drawer.Screen name="Profile" component={ProfileStackScreen} initialParams={{name:userId}} />
 
                 {/*<Drawer.Screen name="Details" component={DetailsStackScreen} />*/}
                 <Drawer.Screen name="About" component={AboutStackScreen} />
@@ -436,7 +443,7 @@ const AppNavigation = () =>{
 
                     <Drawer.Screen name="View-device" component={ViewDeviceStackScreen} />
                     <Drawer.Screen name="Add-device" component={AddDeviceStackScreen} />
-                
+
             </Drawer.Navigator>):<SignInScreen/>}
         </NavigationContainer>
         </AuthContext.Provider>

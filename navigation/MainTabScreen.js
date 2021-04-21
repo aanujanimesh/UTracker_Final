@@ -6,10 +6,9 @@ import {createStackNavigator} from "@react-navigation/stack";
 //import Icon from "react-native-vector-icons/Ionicons";
 
 import HomeScreen from "../screens/bottomTab/home/homeScreen";
-import LocationScreen from "../screens/bottomTab/loacation/locationScreen";
-import  DeviceScreen from "../screens/bottomTab/device/deviceScreen";
-import ReportScreen from "../screens/bottomTab/reports/reportsScreen";
-import PreviousLocationScreen from "../screens/bottomTab/loacation/previousLocation/previousLocationScreen";
+import CompanyScreen from "../screens/bottomTab/company/CompanyScreen";
+import DeviceScreen from "../screens/bottomTab/device/DeviceScreen";
+import ReportScreen from "../screens/bottomTab/vehicle/VehicleScreen";
 import DrawerContent from "./DrawerContent"
 //import ExploreScreen from "../screens/ExploreScreen";
 
@@ -55,8 +54,8 @@ const LocationStackScreen = ({navigation}) =>(
             fontWeight:'bold'
         }
     }}>
-        <LocationStack.Screen name="Location" component={LocationScreen} options={{
-            title:'Location',
+        <LocationStack.Screen name="Company" component={CompanyScreen} options={{
+            title:'Company',
             headerLeft:() => (
                 <Icon.Button name="ios-menu"
                              size={25}
@@ -105,8 +104,8 @@ const ReportStackScreen = ({navigation}) =>(
             fontWeight:'bold'
         }
     }}>
-        <ReportStack.Screen name="Report" component={ReportScreen} options={{
-            title:'Report',
+        <ReportStack.Screen name="Vehicle" component={ReportScreen} options={{
+            title:'Vehicle',
             headerLeft:() => (
                 <Icon.Button name="ios-menu"
                              size={25}
@@ -140,41 +139,43 @@ const MainTabScreen =() => {
                 }}
             />
             <Tab.Screen
-                name="Location"
+                name="Company"
                 component={LocationStackScreen}
                 options={{
-                    tabBarLabel: 'Location',
-                    tabBarColor:'#009387',
+                    tabBarLabel: 'Company',
+                    tabBarColor:'#009386',
                     tabBarIcon: ({ color }) => (
-                        <Icon name="md-location-sharp" color={color} size={26} />//26
+                        <Icon name="grid-sharp" color={color} size={26} />//26
                     ),
                 }}
             />
 
-            <Tab.Screen
-                name="Device"
-                component={DeviceStackScreen}
-                options={{
-                    tabBarLabel: 'Device',
-                    tabBarColor:'#009387',
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="md-settings" color={color} size={26} />
-                    ),
-                }}
-            />
+            {/*<Tab.Screen*/}
+            {/*    name="Device"*/}
+            {/*    component={DeviceStackScreen}*/}
+            {/*    options={{*/}
+            {/*        tabBarLabel: 'Device',*/}
+            {/*        tabBarColor:'#009387',*/}
+            {/*        tabBarIcon: ({ color }) => (*/}
+            {/*            <Icon name="desktop" color={color} size={26} />*/}
+            {/*        ),*/}
+            {/*    }}*/}
+            {/*/>*/}
 
 
             <Tab.Screen
                 name="Report"
                 component={ReportStackScreen}
                 options={{
-                    tabBarLabel: 'Report',
+                    tabBarLabel: 'Vehicle',
                     tabBarColor:'#009387',
                     tabBarIcon: ({ color }) => (
-                        <Icon name="md-reader" color={color} size={26} />
+                        <Icon name="ios-car-sport-sharp" color={color} size={26} />
                     ),
                 }}
             />
+
+
 
 
 
